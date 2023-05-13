@@ -1,0 +1,32 @@
+// sql = `CREATE TABLE users (
+//     id INTEGER PRIMARY KEY ,
+//     name varchar(100) not null,
+//     surname varchar(100) not null,
+//     username varchar(100) not null,
+//     password varchar(64) not null,
+//     email varchar(319) not null,
+//     role int CHECK(role BETWEEN 1 AND 4)
+// )`
+// db.run(sql,(err,db)=>{
+//     if(err) return console.error(err.message)
+// })
+
+// sql = `INSERT INTO users(
+//     id,
+//     name,
+//     surname,
+//     username,
+//     password,
+//     email,
+//     role
+// )VALUES (?,?,?,?,?,?,?)`
+// db.run(sql,[null,"admin","admin","admin","8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918","admin@admin.com",1],(err,db)=>{
+//     if(err) return console.error(err.message)
+// })
+
+// si.createTable("aaaa", [
+//     new Params("Ciao", "varchar(20)", true, false, ""),
+//     new Params("Coglione", "varchar(10)", false, true, ""),
+// ]);
+
+//si.insertIntoTable("aaaa", ["Ciao", "Coglione"], ["primo2", "secondo2"]);
