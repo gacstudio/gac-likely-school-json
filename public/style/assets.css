@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    text-decoration: none;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+}
+
+@supports(width: 100dvw) {
+    .container {
+        width: 100dvw;
+        height: 100dvh;
+    }
+}
+
+/*VARIABLES*/
+:root {
+    --heart-purple-color: #7917DC;
+    --pastel-purple-color: #B1A8B9;
+    --light-pastel-purple-color: #BDA0D3;
+    --heliotrope-purple-color: #C564FF;
+
+    --lavender-purple-color: #9B80B1;
+}
+:root{
+    --bg-color: #FFFFFF;
+    --icon-active-color: #A923A2;
+    --icon-hover-color: #F87634; /*C564FF*/
+    --icon-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
+
+    --txt-color: #000000;
+}
+[data-theme="dark"]{
+    --bg-color: #161616;
+    --icon-active-color: #A923A2;
+    --icon-hover-color: #F87634; /*c664ffba*/
+    --icon-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
+
+    --txt-color: #FFFFFF;
+}
+/*#B1A8B9*/
+/*FONTS*/
+@font-face {
+    font-family: "itr-regular";
+    src: url(./fonts/Inter-Regular.ttf);
+}
+
+@font-face {
+    font-family: "itr-semibold";
+    src: url(./fonts/Inter-SemiBold.ttf);
+}
+
+/*ICONS*/
+.icon {
+    width: 40px;
+    height: 40px;
+    background: #000000;
+    color: transparent;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.ic-home {
+    -webkit-mask: url(./icons/home.svg) no-repeat center content-box;
+    mask: url(./icons/home.svg) no-repeat center content-box;
+}
+
+.ic-books {
+    -webkit-mask: url(./icons/books.svg) no-repeat center content-box;
+    mask: url(./icons/books.svg) no-repeat center content-box;
+}
+
+.ic-compass {
+    -webkit-mask: url(./icons/compass.svg) no-repeat center content-box;
+    mask: url(./icons/compass.svg) no-repeat center content-box;
+}
+
+.ic-users {
+    -webkit-mask: url(./icons/users.svg) no-repeat center content-box;
+    mask: url(./icons/users.svg) no-repeat center content-box;
+}
+
+.ic-user {
+    -webkit-mask: url(./icons/user.svg) no-repeat center content-box;
+    mask: url(./icons/user.svg) no-repeat center content-box;
+}
+
+.ic-caret-left {
+    -webkit-mask: url(./icons/caret-left.svg) no-repeat center content-box;
+    mask: url(./icons/caret-left.svg) no-repeat center content-box;
+}

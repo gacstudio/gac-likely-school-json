@@ -1,0 +1,135 @@
+@import url(./assets.css);
+
+.container {
+    display: grid;
+    grid-template-rows: min-content 1fr min-content;
+    overflow: hidden;
+    background: var(--bg-color);
+}
+
+.container:where(*) {
+    font-family: "itr-regular";
+    color: var(--txt-color);
+}
+
+
+.container header {
+    display: grid;
+    place-items: center;
+    padding: 10px;
+    font: 32px "itr-semibold";
+}
+
+.container menu {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    gap: 10px;
+}
+
+.container menu a {
+    background: var(--icon-normal-color);
+}
+
+.container menu a:hover:not(.active) {
+    background: var(--icon-hover-color);
+}
+
+.container menu .active {
+    background: var(--icon-active-color);
+}
+
+
+/*Login*/
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.login-form input{
+    font-size: 1.5rem;
+    margin-top: 20px;
+}
+
+.login-form input[type="text"],.login-form input[type="password"],.login-form input[type="submit"]{
+    border: .25px solid rgba(0, 0, 0, 0.374);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.login-form input[type="text"]::placeholder,.login-form input[type="password"]::placeholder{
+    color: rgba(208, 208, 208, 0.759);
+}
+
+.login-form input[type="submit"]{
+    background: var(--icon-normal-color);
+    color: white;
+}
+/*MODIFY*/
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.theme-switch-wrapper em {
+    margin-left: 10px;
+    font-size: 1rem;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: 0.4s;
+}
+
+.slider:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: 0.4s;
+    width: 26px;
+}
+
+input:checked+.slider {
+    background-color: #66bb6a;
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
