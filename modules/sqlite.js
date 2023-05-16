@@ -49,12 +49,50 @@ module.exports = class GC_Database {
             if (err) return console.error(err.message);
         });
     }
-    readTable(table) {
-        let sql = `SELECT * FROM ${table}`;
+    readTable(table, params) {
+        let sql = `SELECT `;
+        params.forEach((param) => {
+            sql += `${param},`;
+        });
+        sql.endsWith(",") ? (sql = sql.slice(0, sql.length - 1)) : sql;
+        sql += ` FROM ${table}`;
+        console.log(sql);
         this.db.all(sql, (err, rows) => {
             if (err) return console.error(err.message);
-            console.log(rows);
+            //console.log(rows);
         });
+    }
+
+    readTableWhere(table, params, where_con, dest_url) {
+        var userData = null;
+        let sql = `SELECT `;
+        params.forEach((param) => {
+            sql += `${param},`;
+        });
+        sql.endsWith(",") ? (sql = sql.slice(0, sql.length - 1)) : sql;
+        sql += ` FROM ${table} WHERE ${where_con}`;
+        console.log(sql);
+        var XMLHttpRequest = require("xhr2");
+
+        this.db
+            .all(sql, (err, rows) => {
+                if (err) return console.error(err.message);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", `${dest_url}`, true);
+                xhr.setRequestHeader(
+                    "Content-type",
+                    "application/x-www-form-urlencoded"
+                );
+                xhr.onload = function () {
+                    // do something to response
+                    console.log(this.responseText);
+                };
+
+                xhr.send(`result=${JSON.stringify(rows)}`);
+
+                return userData;
+            })
+            .addListener("", () => {});
     }
 
     /*
