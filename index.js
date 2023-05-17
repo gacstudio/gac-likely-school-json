@@ -8,7 +8,7 @@ var config = JSON.parse(fs.readFileSync("config.json", "utf8"));
 
 const SERVER_IP = config.SERVER_IP;
 const SERVER_PORT = config.SERVER_PORT;
-const DEBUG_LINES = config.DEBUG_LINES;
+const DEBUG_LINES = config.VERBOSE;
 var DATABASE_NAME = String(config.DATABASE_NAME);
 
 DATABASE_NAME.endsWith(".db") ? DATABASE_NAME : (DATABASE_NAME += ".db");
