@@ -8,13 +8,17 @@ var config = JSON.parse(fs.readFileSync("config.json", "utf8"));
 
 const SERVER_IP = config.SERVER_IP;
 const SERVER_PORT = config.SERVER_PORT;
+const DEBUG_LINES = config.DEBUG_LINES;
+var DATABASE_NAME = String(config.DATABASE_NAME);
+
+DATABASE_NAME.endsWith(".db") ? DATABASE_NAME : (DATABASE_NAME += ".db");
 
 var bodyParser = require("body-parser");
 var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 
-const db = new GC_Database("./database.db");
+const db = new GC_Database(`./${DATABASE_NAME}`);
 var cors = require("cors");
 
 app.use(
@@ -77,20 +81,22 @@ app.get("/sign", (req, res) => {
 
 var to_res = [];
 app.post("/success", (req, res) => {
+    if (DEBUG_LINES) console.log("sending login request result to " + req.ip);
+
     var result = req.body.result;
     var res = to_res.pop(req.body.ores);
     res.redirect(`/?user_data=${result}`);
 });
 var to_res_count = to_res.length;
 app.post("/login", (req, res) => {
-    console.log(req);
+    if (DEBUG_LINES) console.log("login request recived from " + req.ip);
+
     var username = req.body.username;
     var pswd = req.body.pswd;
     if (pswd == "" || pswd == undefined) {
         res.redirect("/sign");
     }
     pswd = createHash("sha256").update(pswd).digest("hex");
-    console.log(pswd);
     to_res.push(res);
     db.readTableWhereToClient(
         "users",

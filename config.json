@@ -1,4 +1,6 @@
 {
     "SERVER_IP": "localhost",
-    "SERVER_PORT": 3000
+    "SERVER_PORT": 3000,
+    "VERBOSE": false,
+    "DATABASE_NAME": "database.db"
 }
