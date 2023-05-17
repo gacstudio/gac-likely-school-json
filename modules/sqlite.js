@@ -1,5 +1,6 @@
 const sqlite3 = require("sqlite3").verbose();
 const fs = require("fs");
+const { IncomingMessage } = require("http");
 module.exports = class GC_Database {
     db;
     constructor(path) {
@@ -63,7 +64,14 @@ module.exports = class GC_Database {
         });
     }
 
-    readTableWhere(table, params, where_con, dest_url) {
+    readTableWhereToClient(
+        table, // Table name
+        params, // Table to read
+        where_con, // Where condition
+        dest_url, // XHTTP Redirect destination
+        original_req, // Original user request
+        original_res // Original instance response
+    ) {
         var userData = null;
         let sql = `SELECT `;
         params.forEach((param) => {
@@ -88,16 +96,14 @@ module.exports = class GC_Database {
                     console.log(this.responseText);
                 };
 
-                xhr.send(`result=${JSON.stringify(rows)}`);
+                xhr.send(
+                    `result=${JSON.stringify(
+                        rows
+                    )}&oreq=${original_req}&ores=${original_res}`
+                );
 
                 return userData;
             })
             .addListener("", () => {});
     }
-
-    /*
-    
-    createTable("Users",
-    [""])
-    */
 };

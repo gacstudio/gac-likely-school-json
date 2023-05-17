@@ -1,18 +1,28 @@
-const sqlite3 = require("sqlite3").verbose();
 const GC_Database = require("./modules/sqlite");
-const Params = require("./modules/params");
 const path = require("path");
-const fs = require("fs");
 const { createHash } = require("crypto");
 
 const session = require("express-session");
-var bodyParser = require("body-parser");
+const fs = require("fs");
+var config = JSON.parse(fs.readFileSync("config.json", "utf8"));
 
+const SERVER_IP = config.SERVER_IP;
+const SERVER_PORT = config.SERVER_PORT;
+
+var bodyParser = require("body-parser");
 var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
-let sql;
+
 const db = new GC_Database("./database.db");
+var cors = require("cors");
+
+app.use(
+    cors({
+        origin: `http://${SERVER_IP}:${SERVER_PORT}/`,
+        methods: ["GET", "POST"],
+    })
+);
 app.use(
     session({
         secret: "daffy-duck",
@@ -20,7 +30,6 @@ app.use(
         saveUninitialized: false,
     })
 );
-//db.readTable("users", ["name", "surname", "username"]);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(bodyParser.json());
@@ -32,7 +41,10 @@ app.set("view engine", "ejs");
 //ROUTES
 app.get("/", (req, res) => {
     req.session.previousPage = req.originalUrl;
-    res.render("index", { title: "Home" });
+    res.render("index", {
+        title: "Home",
+        server: `http://${SERVER_IP}:${SERVER_PORT}`,
+    });
 });
 
 app.get("/books", (req, res) => {
@@ -63,18 +75,13 @@ app.get("/sign", (req, res) => {
     res.render("sign", { title: "Sign", action_destination: "/login" });
 });
 
-var connectedUsers = [];
-
+var to_res = [];
 app.post("/success", (req, res) => {
-    var result = req.body.result
-        .replace("[{", "")
-        .replace("}]", "")
-        .replace('"', "")
-        .split(",");
-    connectedUsers.push(req.body.result);
-    console.log("Login Successfull\n", result);
+    var result = req.body.result;
+    var res = to_res.pop(req.body.ores);
+    res.redirect(`/?user_data=${result}`);
 });
-
+var to_res_count = to_res.length;
 app.post("/login", (req, res) => {
     console.log(req);
     var username = req.body.username;
@@ -84,12 +91,16 @@ app.post("/login", (req, res) => {
     }
     pswd = createHash("sha256").update(pswd).digest("hex");
     console.log(pswd);
-    db.readTableWhere(
+    to_res.push(res);
+    db.readTableWhereToClient(
         "users",
         ["id", "name", "surname", "email", "username"],
         `username='${username}' and password='${pswd}'`,
-        "http://localhost:3000/success"
+        "http://localhost:3000/success",
+        req,
+        to_res_count
     );
-    res.redirect("/");
 });
-server.listen(3000);
+server.listen(SERVER_PORT);
+console.log(`SERVER LISTENING TO: ${SERVER_IP}:${SERVER_PORT}`);
+console.log(`SERVER CONTENT AVAIBLE AT: http://${SERVER_IP}:${SERVER_PORT}/`);
