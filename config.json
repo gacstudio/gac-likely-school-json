@@ -2,5 +2,11 @@
     "SERVER_IP": "localhost",
     "SERVER_PORT": 3000,
     "VERBOSE": false,
+    "VERBOSE_TYPE": {
+        "CONNECTIONS_VERBOSE": false,
+        "AUTH_ONLY_VERBOSE": false,
+        "QUERY_VERBOSE": false,
+        "COMPLETE_VERBOSE": false
+    },
     "DATABASE_NAME": "database.db"
 }
