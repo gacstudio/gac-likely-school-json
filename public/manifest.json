@@ -1,0 +1,10 @@
+{
+    "name": "Likely School",
+    "short_name": "Likely School",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#fff",
+    "description": "",
+    "icons": [],
+    "related_applications": []
+}
