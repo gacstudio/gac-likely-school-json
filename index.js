@@ -4,26 +4,22 @@ const { createHash } = require("crypto");
 
 const session = require("express-session");
 const fs = require("fs");
-var bodyParser = require("body-parser");
-var express = require("express");
-var cors = require("cors");
-
-//Server Config
 var config = JSON.parse(fs.readFileSync("config.json", "utf8"));
+
 const SERVER_IP = config.SERVER_IP;
 const SERVER_PORT = config.SERVER_PORT;
-const VERBOSE = config.VERBOSE;
-const VERBOSE_TYPE = config.VERBOSE_TYPE;
+const DEBUG_LINES = config.VERBOSE;
 var DATABASE_NAME = String(config.DATABASE_NAME);
 
-//DATABASE_NAME checks!
 DATABASE_NAME.endsWith(".db") ? DATABASE_NAME : (DATABASE_NAME += ".db");
 
+var bodyParser = require("body-parser");
+var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 
-//DB Init
 const db = new GC_Database(`./${DATABASE_NAME}`);
+var cors = require("cors");
 
 app.use(
     cors({
@@ -62,10 +58,12 @@ app.get("/books", (req, res) => {
 });
 app.get("/retrieval", (req, res) => {
     req.session.previousPage = req.originalUrl;
+
     res.render("retrieval", { title: "Retrieval" });
 });
 app.get("/tutors", (req, res) => {
     req.session.previousPage = req.originalUrl;
+
     res.render("tutors", { title: "Tutoring" });
 });
 
@@ -83,44 +81,32 @@ app.get("/sign", (req, res) => {
 
 var to_res = [];
 app.post("/success", (req, res) => {
-    if (
-        (VERBOSE_TYPE.CONNECTION_VERBOSE && VERBOSE) ||
-        (VERBOSE_TYPE.COMPLETE_VERBOSE && VERBOSE)
-    )
-        console.log("Sending login request result to " + req.ip);
-    to_res
-        .pop(req.body.ores)
-        .redirect(
-            `/?user_data=${req.body.result.replace("}", "").replace("{", "")}`
-        );
-});
-app.post("/login", (req, res) => {
-    if (
-        (VERBOSE_TYPE.CONNECTION_VERBOSE && VERBOSE) ||
-        (VERBOSE_TYPE.COMPLETE_VERBOSE && VERBOSE)
-    )
-        console.log(
-            `Login request recived from ${req.ip} for ${req.body.username}`
-        );
+    if (DEBUG_LINES) console.log("sending login request result to " + req.ip);
 
-    var _u = req.body.username;
-    var _p = req.body.pswd;
-    if (_p == "" || _p == undefined) {
+    var result = req.body.result;
+    var res = to_res.pop(req.body.ores);
+    res.redirect(`/?user_data=${result}`);
+});
+var to_res_count = to_res.length;
+app.post("/login", (req, res) => {
+    if (DEBUG_LINES) console.log("login request recived from " + req.ip);
+
+    var username = req.body.username;
+    var pswd = req.body.pswd;
+    if (pswd == "" || pswd == undefined) {
         res.redirect("/sign");
     }
-    _p = createHash("sha256").update(_p).digest("hex");
+    pswd = createHash("sha256").update(pswd).digest("hex");
     to_res.push(res);
-    db.readTableWhereTo_Client(
+    db.readTableWhereToClient(
         "users",
         ["id", "name", "surname", "email", "username"],
-        `username='${_u}' and password='${_p}'`,
-        `http://${SERVER_IP}:${SERVER_PORT}/success`,
+        `username='${username}' and password='${pswd}'`,
+        "http://localhost:3000/success",
         req,
-        to_res.length,
-        (VERBOSE_TYPE.QUERY_VERBOSE && VERBOSE) ||
-            (VERBOSE_TYPE.COMPLETE_VERBOSE && VERBOSE)
+        to_res_count
     );
 });
 server.listen(SERVER_PORT);
 console.log(`SERVER LISTENING TO: ${SERVER_IP}:${SERVER_PORT}`);
-console.log(`SERVER CONTENT AT: http://${SERVER_IP}:${SERVER_PORT}/`);
+console.log(`SERVER CONTENT AVAIBLE AT: http://${SERVER_IP}:${SERVER_PORT}/`);

@@ -12,7 +12,7 @@ module.exports = class GC_Database {
             }
         );
     }
-    createTable(table, params, QUERY_VERBOSE) {
+    createTable(table, params) {
         let query = `CREATE TABLE ${table}(`;
         params.forEach((param) => {
             query += `\n${param.name} ${param.type} ${
@@ -24,12 +24,12 @@ module.exports = class GC_Database {
             : query;
         query += `\n)`;
 
-        if (QUERY_VERBOSE) console.log(query);
+        console.log(query);
         this.db.run(query, (err) => {
             if (err) return console.error(err.message);
         });
     }
-    insertIntoTable(table, params, values, QUERY_VERBOSE) {
+    insertIntoTable(table, params, values) {
         let query = `INSERT INTO ${table}(`;
         params.forEach((param) => {
             query += `${param},`;
@@ -45,35 +45,32 @@ module.exports = class GC_Database {
             ? (query = query.slice(0, query.length - 1))
             : query;
         query += `)`;
-        if (QUERY_VERBOSE) console.log(query);
-
+        console.log(query);
         this.db.run(query, values, (err) => {
             if (err) return console.error(err.message);
         });
     }
-    readTable(table, params, QUERY_VERBOSE) {
+    readTable(table, params) {
         let sql = `SELECT `;
         params.forEach((param) => {
             sql += `${param},`;
         });
         sql.endsWith(",") ? (sql = sql.slice(0, sql.length - 1)) : sql;
         sql += ` FROM ${table}`;
-        if (QUERY_VERBOSE) console.log(sql);
-
+        console.log(sql);
         this.db.all(sql, (err, rows) => {
             if (err) return console.error(err.message);
             //console.log(rows);
         });
     }
 
-    readTableWhereTo_Client(
+    readTableWhereToClient(
         table, // Table name
         params, // Table to read
         where_con, // Where condition
         dest_url, // XHTTP Redirect destination
         original_req, // Original user request
-        original_res, // Original instance response
-        QUERY_VERBOSE // Print query to console, if true, else continue without printing
+        original_res // Original instance response
     ) {
         var userData = null;
         let sql = `SELECT `;
@@ -82,7 +79,7 @@ module.exports = class GC_Database {
         });
         sql.endsWith(",") ? (sql = sql.slice(0, sql.length - 1)) : sql;
         sql += ` FROM ${table} WHERE ${where_con}`;
-        if (QUERY_VERBOSE) console.log(sql);
+        console.log(sql);
         var XMLHttpRequest = require("xhr2");
 
         this.db

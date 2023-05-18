@@ -23,3 +23,10 @@
 // db.run(sql,[null,"admin","admin","admin","8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918","admin@admin.com",1],(err,db)=>{
 //     if(err) return console.error(err.message)
 // })
+
+// si.createTable("aaaa", [
+//     new Params("Ciao", "varchar(20)", true, false, ""),
+//     new Params("Coglione", "varchar(10)", false, true, ""),
+// ]);
+
+//si.insertIntoTable("aaaa", ["Ciao", "Coglione"], ["primo2", "secondo2"]);

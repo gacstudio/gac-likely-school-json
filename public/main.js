@@ -1,19 +1,13 @@
 const getUser_data = () => {
-    if ((data = window.location.href.split("?")[1])) {
+    if (window.location.href.split("/")[1]) {
         window.history.pushState({}, null, window.location.href.split("?")[0]);
-
-        localStorage.setItem("isLogged", true);
-        return data
-            .replace("user_data=", "")
-            .replaceAll("%22", "")
-            .replace("]", "")
-            .replace("[", "");
+        return window.location.href.split("?")[1];
     } else {
-        localStorage.setItem("isLogged", false);
         return "";
     }
 };
-localStorage.setItem("user_data", getUser_data());
+console.log("", user_data);
+
 const toggleSwitch = document.querySelector(
     '.theme-switch input[type="checkbox"]'
 );
