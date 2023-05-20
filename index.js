@@ -49,7 +49,7 @@ app.get("/retrieval", (req, res) => {
 });
 app.get("/tutors", (req, res) => {
     req.session.previousPage = req.originalUrl;
-    readFile("./config/users.json", (error, data) => {
+    readFile("./modules/config/users.json", (error, data) => {
         if (error) { console.log(error); return; }
         const users = JSON.parse(data);
         const usersOutput = users
@@ -80,7 +80,7 @@ app.post('/login', (req, res) => {
     const { username, password } = req.body;
     var c_password = createHash("sha256").update(password).digest("hex");
 
-    readFile("./config/users.json", (error, data) => {
+    readFile("./modules/config/users.json", (error, data) => {
         if (error) { console.log(error); return; }
         const users = JSON.parse(data);
         console.log(users);
