@@ -91,6 +91,16 @@
     mask: url(./icons/user.svg) no-repeat center content-box;
 }
 
+.ic-moon {
+    -webkit-mask: url(./icons/moon.svg) no-repeat center content-box;
+    mask: url(./icons/moon.svg) no-repeat center content-box;
+}
+
+.ic-sun {
+    -webkit-mask: url(./icons/sun.svg) no-repeat center content-box;
+    mask: url(./icons/sun.svg) no-repeat center content-box;
+}
+
 .ic-caret-left {
     -webkit-mask: url(./icons/caret-left.svg) no-repeat center content-box;
     mask: url(./icons/caret-left.svg) no-repeat center content-box;

@@ -1,63 +1,46 @@
-const GC_Database = require("./modules/sqlite");
+const { writeFile, readFile } = require("fs");
 const path = require("path");
-const { createHash } = require("crypto");
+const bodyParser = require("body-parser");
+const session = require('express-session');
+const { createHash } = require('crypto');
 
-const session = require("express-session");
-const fs = require("fs");
-var bodyParser = require("body-parser");
+
+//SERVER STARTING
 var express = require("express");
-var cors = require("cors");
-
-//Server Config
-var config = JSON.parse(fs.readFileSync("config.json", "utf8"));
-const SERVER_IP = config.SERVER_IP;
-const SERVER_PORT = config.SERVER_PORT;
-const VERBOSE = config.VERBOSE;
-const VERBOSE_TYPE = config.VERBOSE_TYPE;
-var DATABASE_NAME = String(config.DATABASE_NAME);
-
-//DATABASE_NAME checks!
-DATABASE_NAME.endsWith(".db") ? DATABASE_NAME : (DATABASE_NAME += ".db");
-
 var app = express();
 var server = require("http").createServer(app);
 
-//DB Init
-const db = new GC_Database(`./${DATABASE_NAME}`);
-
-app.use(
-    cors({
-        origin: `http://${SERVER_IP}:${SERVER_PORT}/`,
-        methods: ["GET", "POST"],
-    })
-);
-app.use(
-    session({
-        secret: "daffy-duck",
-        resave: false,
-        saveUninitialized: false,
-    })
-);
-app.use(express.static(path.join(__dirname, "public")));
-
+app.use(session({
+    secret: 'il_tuo_segreto_di_sessione',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 5 * 24 * 60 * 60 * 1000 // Durata di 5 giorni in millisecondi
+    }
+}));
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+server.listen(3000, () => {
+    console.log("Server listening on port 3000");
+});
+
+
 //ROUTES
 app.get("/", (req, res) => {
     req.session.previousPage = req.originalUrl;
-    res.render("index", {
-        title: "Home",
-        server: `http://${SERVER_IP}:${SERVER_PORT}`,
-    });
+    if (req.session.isLoggedIn) {
+        res.render("index", { title: "Home" });
+    } else {
+        res.redirect('/login');
+    }
 });
-
 app.get("/books", (req, res) => {
     req.session.previousPage = req.originalUrl;
-
     res.render("books", { title: "Library" });
 });
 app.get("/retrieval", (req, res) => {
@@ -66,7 +49,17 @@ app.get("/retrieval", (req, res) => {
 });
 app.get("/tutors", (req, res) => {
     req.session.previousPage = req.originalUrl;
-    res.render("tutors", { title: "Tutoring" });
+    readFile("./config/users.json", (error, data) => {
+        if (error) { console.log(error); return; }
+        const users = JSON.parse(data);
+        const usersOutput = users
+            .filter(user => user.ruolo === 'Tutor')
+            .map(user => {
+                const { password, ...userWithoutPassword } = user;
+                return userWithoutPassword;
+            });
+        res.render("tutors", { title: "Tutoring", users: usersOutput });
+    });
 });
 
 app.get("/profile", (req, res) => {
@@ -77,50 +70,31 @@ app.get("/back", (req, res) => {
     res.redirect(req.session.previousPage || "/");
 });
 
-app.get("/sign", (req, res) => {
-    res.render("sign", { title: "Sign", action_destination: "/login" });
+// session starting
+
+app.get("/login", (req, res) => {
+    if (!req.session.isLoggedIn) { res.render('login', { title: 'Login', message: '' }); }
+    else { res.redirect('/'); }
+});
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    var c_password = createHash("sha256").update(password).digest("hex");
+
+    readFile("./config/users.json", (error, data) => {
+        if (error) { console.log(error); return; }
+        const users = JSON.parse(data);
+        console.log(users);
+        if (checkCredentials(users, username, c_password)) {
+            req.session.isLoggedIn = true;
+            res.redirect('/');
+        } else {
+            const message = 'Credenziali invalide';
+            res.render('login', { message });
+        }
+    });
 });
 
-var to_res = [];
-app.post("/success", (req, res) => {
-    if (
-        (VERBOSE_TYPE.CONNECTION_VERBOSE && VERBOSE) ||
-        (VERBOSE_TYPE.COMPLETE_VERBOSE && VERBOSE)
-    )
-        console.log("Sending login request result to " + req.ip);
-    to_res
-        .pop(req.body.ores)
-        .redirect(
-            `/?user_data=${req.body.result.replace("}", "").replace("{", "")}`
-        );
-});
-app.post("/login", (req, res) => {
-    if (
-        (VERBOSE_TYPE.CONNECTION_VERBOSE && VERBOSE) ||
-        (VERBOSE_TYPE.COMPLETE_VERBOSE && VERBOSE)
-    )
-        console.log(
-            `Login request recived from ${req.ip} for ${req.body.username}`
-        );
-
-    var _u = req.body.username;
-    var _p = req.body.pswd;
-    if (_p == "" || _p == undefined) {
-        res.redirect("/sign");
-    }
-    _p = createHash("sha256").update(_p).digest("hex");
-    to_res.push(res);
-    db.readTableWhereTo_Client(
-        "users",
-        ["id", "name", "surname", "email", "username"],
-        `username='${_u}' and password='${_p}'`,
-        `http://${SERVER_IP}:${SERVER_PORT}/success`,
-        req,
-        to_res.length,
-        (VERBOSE_TYPE.QUERY_VERBOSE && VERBOSE) ||
-            (VERBOSE_TYPE.COMPLETE_VERBOSE && VERBOSE)
-    );
-});
-server.listen(SERVER_PORT);
-console.log(`SERVER LISTENING TO: ${SERVER_IP}:${SERVER_PORT}`);
-console.log(`SERVER CONTENT AT: http://${SERVER_IP}:${SERVER_PORT}/`);
+function checkCredentials(arr, username, password) {
+    const user = arr.find(user => user.username === username && user.password === password);
+    return user !== undefined;
+}

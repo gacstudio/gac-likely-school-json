@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="" />
-        <link rel="manifest" href="manifest.json" />
-        <link rel="stylesheet" href="/style/style.css" />
-
-        <title>Likely School - <%= title %></title>
-    </head>
-    <body>
-        <div class="container">
-            <header><%- include('./modules/header.ejs'); %></header>
-            <main></main>
-            <menu> <%- include('./modules/navbar.ejs'); %> </menu>
-        </div>
-        <script src="main.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/style.css" />
+    <title>Likely School - <%= title %></title>
+</head>
+<body>
+    <div class="container">
+        <header><%- include('./modules/header.ejs'); %></header>
+        <main></main>
+        <menu> <%- include('./modules/navbar.ejs'); %> </menu>
+    </div>
+    <script src="main.js"></script>
+</body>
 </html>
