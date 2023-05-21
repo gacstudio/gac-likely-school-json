@@ -10,7 +10,13 @@
 <body>
     <div class="container">
         <header><%- include('./modules/header.ejs'); %></header>
-        <main></main>
+        <main>
+            <div class="list">
+            <% users.forEach((user) => { %>
+                <a href="/profile?id=<%= user.id %>"><%= user.name %> <%= user.surname %></a>
+            <% }); %>
+            </div>
+        </main>
         <menu> <%- include('./modules/navbar.ejs'); %> </menu>
     </div>
     <script src="main.js"></script>

@@ -29,17 +29,21 @@
 }
 :root{
     --bg-color: #FFFFFF;
+
     --icon-active-color: #A923A2;
-    --icon-hover-color: #F87634; /*C564FF*/
     --icon-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
+
+    --button-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
 
     --txt-color: #000000;
 }
 [data-theme="dark"]{
     --bg-color: #161616;
+    
     --icon-active-color: #A923A2;
-    --icon-hover-color: #F87634; /*c664ffba*/
     --icon-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
+
+    --button-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
 
     --txt-color: #FFFFFF;
 }

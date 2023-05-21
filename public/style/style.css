@@ -11,7 +11,7 @@
     font-family: "itr-regular";
     color: var(--txt-color);
 }
-
+/*HEADER*/
 .container header {
     display: grid;
     grid-template-columns: 1fr min-content;
@@ -21,7 +21,7 @@
 .container header .title{
     font: 32px "itr-semibold";
 }
-
+/*MENU*/
 .container menu {
     display: flex;
     justify-content: space-around;
@@ -41,20 +41,27 @@
     background: var(--icon-active-color);
 }
 
-/*toggle*/:root {
-  --light: #d8dbe0;
-  --dark: #28292c;
-  --link: rgb(27, 129, 112);
-  --link-hover: rgb(24, 94, 82);
-}
-.toggle{
+/*SIGN*/
+.container main:has(.sign){
     display: grid;
+    place-items: center;
 }
-.toggle .icon{
-    width: 32px; height: 32px;
+.container .sign{
+    display: flex; flex-direction: column;
+    gap: 5px; font-size: 18px;
 }
-.toggle input{
-    appearance: none;
-    -webkit-appearance: none;
-    background: var(--txt-color);
+.container .sign .item{
+    display: grid; gap: 5px;
 }
+.container .sign input{
+    padding: 10px;
+}
+.container .sign button{
+    background: var(--button-normal-color);
+    padding: 10px; color: var(--txt-color);
+    font-family:"itr-semibold";
+}
+/*TOGGLE DARK/LIGHT MODE*/
+.toggle{ display: grid; }
+.toggle .icon{ width: 32px; height: 32px; }
+.toggle input{ appearance: none; -webkit-appearance: none; background: var(--txt-color); }

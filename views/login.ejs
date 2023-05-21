@@ -1,8 +1,31 @@
-<form action="/login" method="POST">
-    <input type="text" name="username" placeholder="Username">
-    <br>
-    <input type="password" name="password" placeholder="Password">
-    <br>
-    <input type="submit" value="Login">
-</form>
-<%= message %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/style.css" />
+    <title>Likely School - <%= title %></title>
+</head>
+<body>
+    <div class="container">
+        <header><%- include('./modules/header.ejs'); %></header>
+        <main>
+            <form action="/login" method="POST" class="sign">
+                <span><%= message %></span>
+                <div class="item">
+                    <label for="username">Nome utente</label>
+                    <input type="text" name="username" id="username" placeholder="rossi.mario" required>
+                </div>
+                <div class="item">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="●●●●●●●●" required>
+                </div>
+                <button type="submit">Accedi</button>
+                <span>Non hai un account? <a href="/register">Registrati</a></span>
+            </form>
+        </main>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
