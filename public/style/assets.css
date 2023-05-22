@@ -29,6 +29,7 @@
 }
 :root{
     --bg-color: #FFFFFF;
+    --shades: #D9D9D9;
 
     --icon-active-color: #A923A2;
     --icon-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
@@ -36,9 +37,11 @@
     --button-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
 
     --txt-color: #000000;
+    --txt-shades: #000000;
 }
 [data-theme="dark"]{
     --bg-color: #161616;
+    --shades: #D9D9D9;
     
     --icon-active-color: #A923A2;
     --icon-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
@@ -46,6 +49,7 @@
     --button-normal-color: linear-gradient(#A923A2 0%,#F87634 100%);
 
     --txt-color: #FFFFFF;
+    --txt-shades: #000000;
 }
 /*#B1A8B9*/
 /*FONTS*/

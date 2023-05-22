@@ -76,20 +76,25 @@ app.get("/tutors", (req, res) => {
     
 
 app.get("/profile", (req, res) => {
-    console.log(req.query.id);
     if (req.session.isLoggedIn) {
-        if(req.query.id){
-            readFile("./modules/config/users.json", (error, data) => {
-                if (error) { console.log(error); return; }
-                const users = JSON.parse(data);
+        readFile("./modules/config/users.json", (error, data) => {
+            if (error) { 
+                console.log(error);
+                return;
+            }
+            const users = JSON.parse(data);
 
-                if(user = users.find(user => user.id === req.query.id)){
-                    res.render("profile", { title: "Profile", user: users.find(user => user.id == req.query.id) });
+            if (req.query.id) {
+                const user = users.find(user => user.id == req.query.id);
+                if (user) {
+                    res.render("profile", { title: "Profile", user, page: req.url });
+                } else {
+                    res.send("User not found");
                 }
-            });
-        } else{
-            res.render("profile", { title: "Profile", user: req.session.user });
-        }
+            } else {
+                res.render("profile", { title: "Profile", user: req.session.user, page: req.url });
+            }
+        });
     } else {
         res.redirect('/login');
     }
@@ -102,8 +107,8 @@ app.get("/logout", (req, res)=>{
     req.session.destroy();
     res.redirect("/login");
 })
-// session starting
 
+// session starting
 app.get("/login", (req, res) => {
     if (!req.session.isLoggedIn) { res.render('login', { title: 'Login', message: '' }); }
     else { res.redirect('/'); }
@@ -111,24 +116,10 @@ app.get("/login", (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     var c_password = createHash("sha256").update(password).digest("hex");
-
     readFile("./modules/config/users.json", (error, data) => {
         if (error) { console.log(error); return; }
         const users = JSON.parse(data);
         //console.log(users);
-        
-        /**
-         *     {
-        "id": 2,
-        "name": "Daniele",
-        "surname": "Giacchè",
-        "username": "dani2318",
-        "email": "mail@mail.it",
-        "password":"9125acdc004c33d61bb79666889492865dd58ace6fe30320422352d95ed77717",
-        "role": "ADMIN"
-    }
-]
-         */
         
         if (checkCredentials(users, username, c_password)) {
             user = users.find(us => us.username === username && us.password === c_password);
